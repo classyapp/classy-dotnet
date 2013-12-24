@@ -173,7 +173,7 @@ namespace Classy.DotNet.Mvc.Controllers.Security
 
                 return CompleteRegistration(model);
             }
-            catch (ClassyValidationException eex)
+            catch (ClassyException eex)
             {
                 AddModelErrors(eex);
                 return View(model);

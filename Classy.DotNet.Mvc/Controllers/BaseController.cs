@@ -36,7 +36,7 @@ namespace Classy.DotNet.Mvc.Controllers
             }
         }
 
-        public void AddModelErrors(ClassyValidationException eex)
+        public void AddModelErrors(ClassyException eex)
         {
             foreach (var e in eex.Errors)
             {

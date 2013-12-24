@@ -102,7 +102,7 @@ namespace Classy.DotNet.Mvc.Controllers
                         });
                     return RedirectToAction("ReviewThanks");
                 }
-                catch(ClassyValidationException cvx)
+                catch(ClassyException cvx)
                 {
                     AddModelErrors(cvx);
                 }

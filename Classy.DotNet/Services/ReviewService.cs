@@ -42,7 +42,7 @@ namespace Classy.DotNet.Services
             {
                 if (wex.IsBadRequest())
                 {
-                    throw wex.ToValidationException();
+                    throw wex.ToClassyException();
                 }
                 throw wex;
             }

@@ -95,7 +95,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
                 return View(string.Concat("Create", ListingTypeName));
             }
-            catch(ClassyValidationException cvx)
+            catch(ClassyException cvx)
             {
                 AddModelErrors(cvx);
                 return View(string.Concat("Create", ListingTypeName));
@@ -139,7 +139,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var service = new ListingService();
                 service.PostComment(listingId, content);
             }
-            catch(ClassyValidationException cvx)
+            catch(ClassyException cvx)
             {
                 AddModelErrors(cvx);
             }
@@ -159,7 +159,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var service = new ListingService();
                 service.FavoriteListing(listingId);
             }
-            catch (ClassyValidationException cvx)
+            catch (ClassyException cvx)
             {
                 AddModelErrors(cvx);
             }

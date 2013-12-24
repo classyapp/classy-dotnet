@@ -164,7 +164,7 @@ namespace Classy.DotNet.Security
             {
                 if (wex.IsBadRequest())
                 {
-                    throw wex.ToValidationException();
+                    throw wex.ToClassyException();
                 }
                 return false;
             }

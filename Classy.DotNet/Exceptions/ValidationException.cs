@@ -14,11 +14,20 @@ namespace Classy.DotNet
         public string ErrorCode { get; set; }
     }
 
-    public class ClassyValidationException : Exception
+    public class ClassyException : Exception
     {
         public IList<ValidationError> Errors { get; private set; }
 
-        public ClassyValidationException(IList<ValidationError> errors) : base() 
+        public ClassyException(string errorCode) : base()
+        {
+            Errors = new List<ValidationError> {
+                new ValidationError {
+                    ErrorCode = errorCode
+                }
+            };
+        }
+
+        public ClassyException(IList<ValidationError> errors) : base() 
         {
             Errors = errors;
         }
@@ -28,6 +37,8 @@ namespace Classy.DotNet
     {
         public class ResponseStatus
         {
+            public string ErrorCode { get; set; }
+            public string Message { get; set; }
             public IList<ValidationError> Errors { get; set; }
         }
 
@@ -36,24 +47,14 @@ namespace Classy.DotNet
             public ResponseStatus ResponseStatus { get; set; }
         }
 
-        public static ClassyValidationException ToValidationException(this WebException wex)
+        public static ClassyException ToClassyException(this WebException wex)
         {
             var badRequest = wex.GetResponseBody().FromJson<BadRequest>();
-            if (badRequest == null)
+            if (badRequest.ResponseStatus.Errors.Count == 0)
             {
-                badRequest = new BadRequest
-                {
-                    ResponseStatus = new ResponseStatus
-                    {
-                        Errors = new List<ValidationError> {
-                            new ValidationError {
-                                ErrorCode = (wex.Response as HttpWebResponse).StatusDescription
-                            }
-                        }
-                    }
-                };
+                return new ClassyException(badRequest.ResponseStatus.Message);
             }
-            return new ClassyValidationException(badRequest.ResponseStatus.Errors);
+            return new ClassyException(badRequest.ResponseStatus.Errors);
         }
     }
 }

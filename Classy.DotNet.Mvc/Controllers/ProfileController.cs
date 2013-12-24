@@ -226,7 +226,7 @@ namespace Classy.DotNet.Mvc.Controllers
                     "CreateProfessionalProfile");
                 return RedirectToRoute("MyProfile");
             }
-            catch(ClassyValidationException cve)
+            catch(ClassyException cve)
             {
                 AddModelErrors(cve);
                 return View(model);
@@ -286,7 +286,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var service = new ProfileService();
                 service.FollowProfile(username);
             }
-            catch (ClassyValidationException cvx)
+            catch (ClassyException cvx)
             {
                 AddModelErrors(cvx);
             }
