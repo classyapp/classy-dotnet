@@ -87,7 +87,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 try
                 {
                     var service = new ReviewService();
-                    var metadata = model.Metadata != null ? model.Metadata.ToCustomAttributeList() : null;
+                    var metadata = model.Metadata != null ? model.Metadata.ToDictionary() : null;
                     var response = service.SubmitProfileReview(
                         model.ProfileId,
                         model.SubCriteria.CalculateScore(),

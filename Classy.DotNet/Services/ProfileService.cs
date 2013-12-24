@@ -37,7 +37,7 @@ namespace Classy.DotNet.Services
             return profile;
         }
 
-        public ProfileView UpdateProfile(string profileId, SellerView sellerInfo, IList<CustomAttributeView> metadata, string updateType)
+        public ProfileView UpdateProfile(string profileId, SellerView sellerInfo, IDictionary<string, string> metadata, string updateType)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace Classy.DotNet.Services
             }
         }
 
-        public IList<ProfileView> SearchProfiles(string displayName, string category, LocationView location, IEnumerable<CustomAttributeView> metadata)
+        public IList<ProfileView> SearchProfiles(string displayName, string category, LocationView location, IDictionary<string, string> metadata)
         {
             var client = ClassyAuth.GetWebClient();
             var url = string.Format(SEARCH_PROFILES_URL, displayName);
@@ -77,7 +77,7 @@ namespace Classy.DotNet.Services
         public ProxyClaimView ClaimProfileProxy(
             string proxyId,
             SellerView sellerInfo,
-            IList<CustomAttributeView> metadata)
+            IDictionary<string, string> metadata)
         {
             var client = ClassyAuth.GetAuthenticatedWebClient();
             var url = string.Format(CLAIM_AGENT_PROXY_URL, proxyId);

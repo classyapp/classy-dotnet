@@ -22,7 +22,7 @@ namespace Classy.DotNet.Services
             string comments,
             IDictionary<string, decimal> subCriteria,
             ExtendedContactInfoView contactInfo,
-            IList<CustomAttributeView> metadata)
+            IDictionary<string, string> metadata)
         {
             try
             {

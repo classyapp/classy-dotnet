@@ -28,7 +28,7 @@ namespace Classy.DotNet.Services
             string title, 
             string content,
             string listingType,
-            IList<CustomAttributeView> metadata,
+            IDictionary<string, string> metadata,
             HttpFileCollectionBase files)
         {
             var client = ClassyAuth.GetAuthenticatedWebClient();

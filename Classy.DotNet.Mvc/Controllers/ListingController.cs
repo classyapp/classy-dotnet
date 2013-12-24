@@ -83,12 +83,9 @@ namespace Classy.DotNet.Mvc.Controllers
                     model.Title,
                     model.Content,
                     ListingTypeName,
-                    new List<CustomAttributeView> {
-                    new CustomAttributeView {
-                        Key = LISTING_METADATA_KEY,
-                        Value = model.Metadata.ToJson()
-                    }
-                },
+                    new Dictionary<string, string> {
+                         { LISTING_METADATA_KEY, model.Metadata.ToJson() }
+                    },
                     Request.Files);
 
                 TempData["CreateListingSuccess"] = listing;
@@ -117,11 +114,11 @@ namespace Classy.DotNet.Mvc.Controllers
                 true,
                 true,
                 true);
-            var listingMetadata = listing.Metadata.SingleOrDefault(x => x.Key == LISTING_METADATA_KEY);
+            var listingMetadata = listing.Metadata[LISTING_METADATA_KEY];
             var model = new ListingDetailsViewModel<TListingMetadata>
             {
                 Listing = listing,
-                Metadata = listingMetadata != null ? listingMetadata.Value.FromJson<TListingMetadata>() : new TListingMetadata()
+                Metadata = listingMetadata != null ? listingMetadata.FromJson<TListingMetadata>() : new TListingMetadata()
             };
             return View(string.Concat(ListingTypeName,"Details"), model);
         }

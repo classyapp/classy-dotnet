@@ -151,7 +151,7 @@ namespace Classy.DotNet.Mvc.Controllers.Security
             if (model.Metadata != null)
             {
                 var service = new ProfileService();
-                profile = service.UpdateProfile(profile.Id, null, model.Metadata.ToCustomAttributeList(), null);
+                profile = service.UpdateProfile(profile.Id, null, model.Metadata.ToDictionary(), null);
             }
 
             if (OnProfileRegistered != null)

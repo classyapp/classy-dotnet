@@ -102,7 +102,7 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var profile = service.GetProfileById(profileId, true, true, true, true);
-            var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
+            var metadata = new TProMetadata().FromDictionary(profile.Metadata);
             var subCriteria = new TReviewSubCriteria().FromDictionary(profile.ReviewAverageSubCriteria);
             var model = new PublicProfileViewModel<TProMetadata, TReviewSubCriteria>
             {
@@ -123,7 +123,7 @@ namespace Classy.DotNet.Mvc.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var profile = AuthenticatedUserProfile;
-                var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
+                var metadata = new TProMetadata().FromDictionary(profile.Metadata);
                 var model = new ClaimProfileViewModel<TProMetadata>
                 {
                     ProfileId = profileId,
@@ -147,7 +147,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var claim = service.ClaimProfileProxy(
                     request.ProfileId, 
                     request.SellerInfo, 
-                    request.Metadata.ToCustomAttributeList());
+                    request.Metadata.ToDictionary());
                 service.ApproveProxyClaim(claim.Id);
                 return RedirectToRoute("MyProfile");
             }
@@ -167,7 +167,7 @@ namespace Classy.DotNet.Mvc.Controllers
         public ActionResult Search(SearchViewModel<TProMetadata> model)
         {
             var service = new ProfileService();
-            var metadata = model.Metadata != null ? model.Metadata.ToCustomAttributeList() : null;
+            var metadata = model.Metadata != null ? model.Metadata.ToDictionary() : null;
             var profiles = service.SearchProfiles(model.Name, model.Category, model.Location, metadata);
             if (Request.AcceptTypes.Contains("application/json"))
             {
@@ -196,7 +196,7 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var profile = service.GetProfileById(AuthenticatedUserProfile.Id);
-            var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
+            var metadata = new TProMetadata().FromDictionary(profile.Metadata);
             var model = new CreateProfessionalProfileViewModel<TProMetadata>
             {
                 SellerInfo = profile.SellerInfo,
@@ -220,7 +220,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var profile = service.UpdateProfile(
                     AuthenticatedUserProfile.Id, 
                     model.SellerInfo, 
-                    model.Metadata.ToCustomAttributeList(), 
+                    model.Metadata.ToDictionary(), 
                     "CreateProfessionalProfile");
                 return RedirectToRoute("MyProfile");
             }
@@ -250,7 +250,7 @@ namespace Classy.DotNet.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 var metadata = new TProMetadata();
-                metadata.FromCustomAttributeList(profile.Metadata);
+                metadata.FromDictionary(profile.Metadata);
                 var args = new ContactProfessionalArgs<TProMetadata>
                 {
                     ReplyToEmail = (Request.IsAuthenticated) ? (User.Identity as ClassyIdentity).Profile.ContactInfo.Email : model.ReplyToEmail,
