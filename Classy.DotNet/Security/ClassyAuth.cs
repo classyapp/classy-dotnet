@@ -275,7 +275,7 @@ namespace Classy.DotNet.Security
             try
             {
                 var service = new ProfileService();
-                var profile = service.GetProfileById(profileId);
+                var profile = service.GetAuthenticatedProfile();
                 ClassyIdentity identity = new ClassyIdentity
                 {
                     Name = profile.UserName,
@@ -291,7 +291,6 @@ namespace Classy.DotNet.Security
                 ClearAuthCookies();
                 return false;
             }
-
         }
 
         #region // cookie collection manipulation methods 

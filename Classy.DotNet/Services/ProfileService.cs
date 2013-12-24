@@ -19,6 +19,7 @@ namespace Classy.DotNet.Services
         private readonly string CLAIM_AGENT_PROXY_URL = ENDPOINT_BASE_URL + "/profile/{0}/claim";
         private readonly string APPROVE_PROXY_CLAIM_URL = ENDPOINT_BASE_URL + "/profile/{0}/approve";
         private readonly string FOLLOW_PROFILE_URL = ENDPOINT_BASE_URL + "/profile/{0}/follow";
+        private readonly string GET_AUTHENTICATED_PROFILE = ENDPOINT_BASE_URL + "/profile";
 
         private readonly string CLAIM_AGENT_PROXY_DATA = @"{{""SellerInfo"":{0},""Metadata"":{1}}}";
         private readonly string UPDATE_PROFILE_DATA = @"{{""SellerInfo"":{0},""Metadata"":{1},""UpdateType"":{2}}}";
@@ -32,6 +33,15 @@ namespace Classy.DotNet.Services
         {
             var client = ClassyAuth.GetWebClient();
             var url = string.Format(GET_PROFILE_BY_ID_URL, profileId, logImpression, includeSocialConnections, includeReviews, includeListings);
+            var profileJson = client.DownloadString(url);
+            var profile = profileJson.FromJson<ProfileView>();
+            return profile;
+        }
+
+        public ProfileView GetAuthenticatedProfile()
+        {
+            var client = ClassyAuth.GetAuthenticatedWebClient();
+            var url = GET_AUTHENTICATED_PROFILE;
             var profileJson = client.DownloadString(url);
             var profile = profileJson.FromJson<ProfileView>();
             return profile;
