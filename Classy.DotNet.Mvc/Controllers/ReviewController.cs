@@ -16,11 +16,10 @@ using System.Web;
 
 namespace Classy.DotNet.Mvc.Controllers
 {
-    public class ReviewController<TProMetadata> : BaseController
+    public class ReviewController<TProMetadata, TReviewSubCriteria> : BaseController
         where TProMetadata : IMetadata<TProMetadata>, new()
+        where TReviewSubCriteria : IReviewSubCriteria<TReviewSubCriteria>, new()
     {
-        private readonly string PROFESSIONAL_PROFILE_METADATA_KEY = "ProfessionalProfile";
-
         public ReviewController() : base() { }
         public ReviewController(string ns) : base(ns) { }
 
@@ -70,7 +69,7 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var profile = service.GetProfileById(profileId);
-            var model = new ProfileReviewViewModel<TProMetadata>
+            var model = new ProfileReviewViewModel<TProMetadata, TReviewSubCriteria>
             {
                 IsProxy = profile.IsProxy
             };
@@ -81,7 +80,7 @@ namespace Classy.DotNet.Mvc.Controllers
         // POST: post a review for an agent
         [AcceptVerbs(HttpVerbs.Post)]
         [Authorize]
-        public ActionResult PostProfileReview(ProfileReviewViewModel<TProMetadata> model)
+        public ActionResult PostProfileReview(ProfileReviewViewModel<TProMetadata, TReviewSubCriteria> model)
         {
             if (ModelState.IsValid)
             {
@@ -91,8 +90,9 @@ namespace Classy.DotNet.Mvc.Controllers
                     var metadata = model.Metadata != null ? model.Metadata.ToCustomAttributeList() : null;
                     var response = service.SubmitProfileReview(
                         model.ProfileId,
-                        model.Rank,
+                        model.SubCriteria.CalculateScore(),
                         model.Comments,
+                        model.SubCriteria.ToDictionary(),
                         model.IsProxy ? model.ContactInfo : null,
                         model.IsProxy ? metadata : null);
                     if (OnReviewPosted != null)

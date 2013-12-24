@@ -51,6 +51,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContactProfessionalArgs.cs" />
     <Compile Include="Controllers\IMetadata.cs" />
+    <Compile Include="Controllers\IReviewSubCriteria.cs" />
     <Compile Include="Controllers\ListingController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />

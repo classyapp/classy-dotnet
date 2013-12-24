@@ -17,13 +17,12 @@ using Classy.DotNet.Mvc.ActionFilters;
 namespace Classy.DotNet.Mvc.Controllers
 {
 
-    public class ProfileController<TProMetadata> : BaseController
+    public class ProfileController<TProMetadata, TReviewSubCriteria> : BaseController
         where TProMetadata : IMetadata<TProMetadata>, new()
+        where TReviewSubCriteria : IReviewSubCriteria<TReviewSubCriteria>, new()
     {
         public ProfileController() : base() { }
         public ProfileController(string ns) : base(ns) { }
-
-        private readonly string PROFESSIONAL_PROFILE_METADATA_KEY = "ProfessionalProfile";
 
         public EventHandler<ContactProfessionalArgs<TProMetadata>> OnContactProfessional; 
 
@@ -103,12 +102,13 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var profile = service.GetProfileById(profileId, true, true, true, true);
-            var metadata = new TProMetadata();
-            metadata.FromCustomAttributeList(profile.Metadata);
-            var model = new PublicProfileViewModel<TProMetadata>
+            var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
+            var subCriteria = new TReviewSubCriteria().FromDictionary(profile.ReviewAverageSubCriteria);
+            var model = new PublicProfileViewModel<TProMetadata, TReviewSubCriteria>
             {
                 Profile = profile,
-                TypedMetadata = metadata
+                TypedMetadata = metadata,
+                ReviewSubCriteria = subCriteria
             };
 
             return View(profile.IsSeller ? "PublicProfessionalProfile" : "PublicProfile", model);
@@ -123,8 +123,7 @@ namespace Classy.DotNet.Mvc.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var profile = AuthenticatedUserProfile;
-                var metadata = new TProMetadata();
-                metadata.FromCustomAttributeList(profile.Metadata);
+                var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
                 var model = new ClaimProfileViewModel<TProMetadata>
                 {
                     ProfileId = profileId,
@@ -197,8 +196,7 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var profile = service.GetProfileById(AuthenticatedUserProfile.Id);
-            var metadata = new TProMetadata();
-            metadata.FromCustomAttributeList(profile.Metadata);
+            var metadata = new TProMetadata().FromCustomAttributeList(profile.Metadata);
             var model = new CreateProfessionalProfileViewModel<TProMetadata>
             {
                 SellerInfo = profile.SellerInfo,

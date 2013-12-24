@@ -16,12 +16,11 @@ namespace Classy.DotNet.Services
     {
         private readonly string SUBMIT_REVIEW_URL = ENDPOINT_BASE_URL + "/profile/{0}/reviews/new?returnrevieweeprofile=true&returnreviewerprofile=true";
 
-        private readonly string SUBMIT_REVIEW_DATA = @"{{""Content"":""{0}"",""Score"":{1},""ContactInfo"":{2},""Metadata"":{3}}}";
-
         public PostReviewResponse SubmitProfileReview(
             string profileId,
-            int rank,
+            decimal rank,
             string comments,
+            IDictionary<string, decimal> subCriteria,
             ExtendedContactInfoView contactInfo,
             IList<CustomAttributeView> metadata)
         {
@@ -30,11 +29,13 @@ namespace Classy.DotNet.Services
                 var client = ClassyAuth.GetAuthenticatedWebClient();
                 var url = string.Format(SUBMIT_REVIEW_URL, profileId);
                 var reviewJson = client.UploadString(url, 
-                    string.Format(SUBMIT_REVIEW_DATA, 
-                        comments, 
-                        rank, 
-                        contactInfo != null ? contactInfo.ToJson() : null,
-                        metadata != null ? metadata.ToJson() : null));
+                    new {
+                        Content = comments,
+                        Score = rank,
+                        SubCriteria = subCriteria,
+                        ContactInfo = contactInfo,
+                        Metadata = metadata
+                    }.ToJson());
                 var reviewResponse = reviewJson.FromJson<PostReviewResponse>();
                 return reviewResponse;
             }

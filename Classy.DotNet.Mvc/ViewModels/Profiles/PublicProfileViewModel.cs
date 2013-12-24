@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Classy.DotNet.Mvc.ViewModels.Profiles
 {
-    public class PublicProfileViewModel<TProMetadata>
+    public class PublicProfileViewModel<TProMetadata, TReviewSubCriteria>
     {
         public ProfileView Profile { get; set; }
+        public TReviewSubCriteria ReviewSubCriteria { get; set; }
         public TProMetadata TypedMetadata { get; set; }
     }
 }
