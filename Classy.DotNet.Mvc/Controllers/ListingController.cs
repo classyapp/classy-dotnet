@@ -15,10 +15,8 @@ using Classy.DotNet.Mvc.ActionFilters;
 namespace Classy.DotNet.Mvc.Controllers
 {
     public class ListingController<TListingMetadata> : BaseController
-        where TListingMetadata : new()
+        where TListingMetadata : IMetadata<TListingMetadata>, new()
     {
-        private readonly string LISTING_METADATA_KEY = "ListingMetadata";
-
         public virtual string ListingTypeName { get { return "Listing"; } }
 
         public ListingController() : base() { }
@@ -83,9 +81,7 @@ namespace Classy.DotNet.Mvc.Controllers
                     model.Title,
                     model.Content,
                     ListingTypeName,
-                    new Dictionary<string, string> {
-                         { LISTING_METADATA_KEY, model.Metadata.ToJson() }
-                    },
+                    model.Metadata.ToDictionary(),
                     Request.Files);
 
                 TempData["CreateListingSuccess"] = listing;
@@ -114,11 +110,11 @@ namespace Classy.DotNet.Mvc.Controllers
                 true,
                 true,
                 true);
-            var listingMetadata = listing.Metadata[LISTING_METADATA_KEY];
+            var listingMetadata = new TListingMetadata().FromDictionary(listing.Metadata);
             var model = new ListingDetailsViewModel<TListingMetadata>
             {
                 Listing = listing,
-                Metadata = listingMetadata != null ? listingMetadata.FromJson<TListingMetadata>() : new TListingMetadata()
+                Metadata = listingMetadata
             };
             return View(string.Concat(ListingTypeName,"Details"), model);
         }

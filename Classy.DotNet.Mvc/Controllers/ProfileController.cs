@@ -111,7 +111,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 ReviewSubCriteria = subCriteria
             };
 
-            return View(profile.IsSeller ? "PublicProfessionalProfile" : "PublicProfile", model);
+            return View(profile.IsProfessional ? "PublicProfessionalProfile" : "PublicProfile", model);
         }
 
         //
@@ -127,7 +127,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var model = new ClaimProfileViewModel<TProMetadata>
                 {
                     ProfileId = profileId,
-                    SellerInfo = profile.SellerInfo,
+                    ProfessionalInfo = profile.ProfessionalInfo,
                     Metadata = metadata
                 };
                 return View(model);
@@ -146,7 +146,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var service = new ProfileService();
                 var claim = service.ClaimProfileProxy(
                     request.ProfileId, 
-                    request.SellerInfo, 
+                    request.ProfessionalInfo, 
                     request.Metadata.ToDictionary());
                 service.ApproveProxyClaim(claim.Id);
                 return RedirectToRoute("MyProfile");
@@ -168,7 +168,7 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             var service = new ProfileService();
             var metadata = model.Metadata != null ? model.Metadata.ToDictionary() : null;
-            var profiles = service.SearchProfiles(model.Name, model.Category, model.Location, metadata);
+            var profiles = service.SearchProfiles(model.Name, model.Category, model.Location, metadata, model.ProfessionalsOnly);
             if (Request.AcceptTypes.Contains("application/json"))
             {
                 return Json(profiles, JsonRequestBehavior.AllowGet);
@@ -199,7 +199,7 @@ namespace Classy.DotNet.Mvc.Controllers
             var metadata = new TProMetadata().FromDictionary(profile.Metadata);
             var model = new CreateProfessionalProfileViewModel<TProMetadata>
             {
-                SellerInfo = profile.SellerInfo,
+                ProfessionalInfo = profile.ProfessionalInfo,
                 Metadata = metadata
             };
 
@@ -219,7 +219,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 var service = new ProfileService();
                 var profile = service.UpdateProfile(
                     AuthenticatedUserProfile.Id, 
-                    model.SellerInfo, 
+                    model.ProfessionalInfo, 
                     model.Metadata.ToDictionary(), 
                     "CreateProfessionalProfile");
                 return RedirectToRoute("MyProfile");

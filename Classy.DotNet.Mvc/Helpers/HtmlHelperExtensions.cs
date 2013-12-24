@@ -78,10 +78,10 @@ namespace Classy.DotNet.Mvc
 
         public static MvcHtmlString ProfileLink(this System.Web.Mvc.HtmlHelper html, ProfileView profile)
         {
-            if (profile.ContactInfo == null && !profile.IsSeller) return new MvcHtmlString("unknown");
+            if (profile.ContactInfo == null && !profile.IsProfessional) return new MvcHtmlString("unknown");
             var name = string.Empty;
-            if (profile.IsProxy) name = profile.SellerInfo.ContactInfo.Name;
-            else if (profile.IsSeller) name = profile.SellerInfo.ContactInfo.Name;
+            if (profile.IsProxy) name = profile.ProfessionalInfo.CompanyName;
+            else if (profile.IsProfessional) name = profile.ProfessionalInfo.CompanyName;
             else name = profile.ContactInfo.Name;
             return html.RouteLink(name ?? profile.UserName, "PublicProfile", new { profileId = profile.Id, slug = ToSlug(name) });
         }

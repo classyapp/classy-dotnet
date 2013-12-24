@@ -13,6 +13,7 @@ namespace Classy.DotNet.Mvc.ViewModels.Profiles
         public string Category { get; set; }
         public LocationView Location { get; set; }
         public TProMetadata Metadata { get; set; }
+        public bool ProfessionalsOnly { get; set; }
         public IList<ProfileView> Results { get; set; }
     }
 }

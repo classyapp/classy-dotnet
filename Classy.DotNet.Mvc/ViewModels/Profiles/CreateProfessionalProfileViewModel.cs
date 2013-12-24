@@ -9,7 +9,7 @@ namespace Classy.DotNet.Mvc.ViewModels.Profiles
 {
     public class CreateProfessionalProfileViewModel<TProMetadata>
     {
-        public SellerView SellerInfo { get; set; }
+        public ProfessionalInfoView ProfessionalInfo { get; set; }
         public TProMetadata Metadata { get; set; }
     }
 }

@@ -37,13 +37,18 @@ namespace Classy.DotNet.Services
             return profile;
         }
 
-        public ProfileView UpdateProfile(string profileId, SellerView sellerInfo, IDictionary<string, string> metadata, string updateType)
+        public ProfileView UpdateProfile(string profileId, ProfessionalInfoView proInfo, IDictionary<string, string> metadata, string updateType)
         {
             try
             {
                 var client = ClassyAuth.GetAuthenticatedWebClient();
                 var url = string.Format(UPDATE_PROFILE_URL, profileId);
-                var data = string.Format(UPDATE_PROFILE_DATA, sellerInfo.ToJson(), metadata.ToJson(), updateType);
+                var data = new
+                {
+                    ProfessionalInfo = proInfo,
+                    Metadata = metadata,
+                    UpdateType = updateType
+                }.ToJson();
                 var profileJson = client.UploadString(url, "PUT", data);
                 var profile = profileJson.FromJson<ProfileView>();
                 return profile;
@@ -54,11 +59,11 @@ namespace Classy.DotNet.Services
                 {
                     throw wex.ToClassyException();
                 }
-                return null;
+                throw wex;
             }
         }
 
-        public IList<ProfileView> SearchProfiles(string displayName, string category, LocationView location, IDictionary<string, string> metadata)
+        public IList<ProfileView> SearchProfiles(string displayName, string category, LocationView location, IDictionary<string, string> metadata, bool professionalsOnly)
         {
             var client = ClassyAuth.GetWebClient();
             var url = string.Format(SEARCH_PROFILES_URL, displayName);
@@ -67,7 +72,8 @@ namespace Classy.DotNet.Services
                 DisplayName = displayName,
                 Category = category,
                 Location = location,
-                Metadata = metadata
+                Metadata = metadata,
+                ProfessionalsOnly = professionalsOnly
             }.ToJson();
             var profilesJson = client.UploadString(url, data);
             var profiles = profilesJson.FromJson<IList<ProfileView>>();
@@ -76,12 +82,12 @@ namespace Classy.DotNet.Services
 
         public ProxyClaimView ClaimProfileProxy(
             string proxyId,
-            SellerView sellerInfo,
+            ProfessionalInfoView proInfo,
             IDictionary<string, string> metadata)
         {
             var client = ClassyAuth.GetAuthenticatedWebClient();
             var url = string.Format(CLAIM_AGENT_PROXY_URL, proxyId);
-            var data = string.Format(CLAIM_AGENT_PROXY_DATA, sellerInfo.ToJson(), metadata.ToJson());
+            var data = string.Format(CLAIM_AGENT_PROXY_DATA, proInfo.ToJson(), metadata.ToJson());
             var claimJson = client.UploadString(url, data);
             var claim = claimJson.FromJson<ProxyClaimView>();
             return claim;

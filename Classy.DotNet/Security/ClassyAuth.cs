@@ -288,12 +288,8 @@ namespace Classy.DotNet.Security
             }
             catch (WebException wex)
             {
-                if ((wex.Response as HttpWebResponse).StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    ClearAuthCookies();
-                    return false;
-                }
-                else throw;
+                ClearAuthCookies();
+                return false;
             }
 
         }
