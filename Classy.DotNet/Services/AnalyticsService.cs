@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ServiceStack.Text;
+using System.Net;
 
 namespace Classy.DotNet.Services
 {
@@ -15,15 +16,22 @@ namespace Classy.DotNet.Services
 
         public TripleView LogActivity(string subjectId, ActivityPredicate predicate, string objectId)
         {
-            var client = ClassyAuth.GetWebClient();
-            var tripleJson = client.UploadString(LOG_ACTIVITY_URL, new
+            try
             {
-                SubjectId = subjectId,
-                Predicate = predicate,
-                ObjectId = objectId
-            }.ToJson());
-            var triple = tripleJson.FromJson<TripleView>();
-            return triple;
+                var client = ClassyAuth.GetWebClient();
+                var tripleJson = client.UploadString(LOG_ACTIVITY_URL, new
+                {
+                    SubjectId = subjectId,
+                    Predicate = predicate,
+                    ObjectId = objectId
+                }.ToJson());
+                var triple = tripleJson.FromJson<TripleView>();
+                return triple;
+            }
+            catch(WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
     }
 }

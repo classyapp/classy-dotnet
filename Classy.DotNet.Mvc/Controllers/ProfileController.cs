@@ -100,18 +100,25 @@ namespace Classy.DotNet.Mvc.Controllers
         [ImportModelStateFromTempData]
         public ActionResult PublicProfile(string profileId)
         {
-            var service = new ProfileService();
-            var profile = service.GetProfileById(profileId, true, true, true, true);
-            var metadata = new TProMetadata().FromDictionary(profile.Metadata);
-            var subCriteria = new TReviewSubCriteria().FromDictionary(profile.ReviewAverageSubCriteria);
-            var model = new PublicProfileViewModel<TProMetadata, TReviewSubCriteria>
+            try
             {
-                Profile = profile,
-                TypedMetadata = metadata,
-                ReviewSubCriteria = subCriteria
-            };
+                var service = new ProfileService();
+                var profile = service.GetProfileById(profileId, true, true, true, true);
+                var metadata = new TProMetadata().FromDictionary(profile.Metadata);
+                var subCriteria = new TReviewSubCriteria().FromDictionary(profile.ReviewAverageSubCriteria);
+                var model = new PublicProfileViewModel<TProMetadata, TReviewSubCriteria>
+                {
+                    Profile = profile,
+                    TypedMetadata = metadata,
+                    ReviewSubCriteria = subCriteria
+                };
 
-            return View(profile.IsProfessional ? "PublicProfessionalProfile" : "PublicProfile", model);
+                return View(profile.IsProfessional ? "PublicProfessionalProfile" : "PublicProfile", model);
+            }
+            catch(ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
         }
 
         //
@@ -120,7 +127,7 @@ namespace Classy.DotNet.Mvc.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult ClaimProxyProfile(string profileId)
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
                 var profile = AuthenticatedUserProfile;
                 var metadata = new TProMetadata().FromDictionary(profile.Metadata);
@@ -132,32 +139,39 @@ namespace Classy.DotNet.Mvc.Controllers
                 };
                 return View(model);
             }
-            else return View();
+            catch(ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
         }
 
         //
         // POST: /profile/{proxyId}/claim
         [Authorize]
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult ClaimProxyProfile(ClaimProfileViewModel<TProMetadata> request)
+        public ActionResult ClaimProxyProfile(ClaimProfileViewModel<TProMetadata> model)
         {
             try
             {
+                if (!ModelState.IsValid) return View(model);
+
                 var service = new ProfileService();
                 var claim = service.ClaimProfileProxy(
-                    request.ProfileId, 
-                    request.ProfessionalInfo, 
-                    request.Metadata.ToDictionary());
+                    model.ProfileId,
+                    model.ProfessionalInfo,
+                    model.Metadata.ToDictionary());
                 service.ApproveProxyClaim(claim.Id);
+
                 return RedirectToRoute("MyProfile");
             }
-            catch (WebException wex)
+            catch (ClassyException cvx)
             {
-                throw wex;
-            }
-            catch (UnauthorizedAccessException uex)
-            {
-                throw uex;
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                    return View(model);
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
         }
 
@@ -166,17 +180,24 @@ namespace Classy.DotNet.Mvc.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult Search(SearchViewModel<TProMetadata> model)
         {
-            var service = new ProfileService();
-            var metadata = model.Metadata != null ? model.Metadata.ToDictionary() : null;
-            var profiles = service.SearchProfiles(model.Name, model.Category, model.Location, metadata, model.ProfessionalsOnly);
-            if (Request.AcceptTypes.Contains("application/json"))
+            try
             {
-                return Json(profiles, JsonRequestBehavior.AllowGet);
+                var service = new ProfileService();
+                var metadata = model.Metadata != null ? model.Metadata.ToDictionary() : null;
+                var profiles = service.SearchProfiles(model.Name, model.Category, model.Location, metadata, model.ProfessionalsOnly);
+                if (Request.AcceptTypes.Contains("application/json"))
+                {
+                    return Json(profiles, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    model.Results = profiles;
+                    return View(model);
+                }
             }
-            else
+            catch (ClassyException cex)
             {
-                model.Results = profiles;
-                return View(model);
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
             }
         }
 
@@ -194,16 +215,23 @@ namespace Classy.DotNet.Mvc.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult CreateProfessionalProfile()
         {
-            var service = new ProfileService();
-            var profile = service.GetProfileById(AuthenticatedUserProfile.Id);
-            var metadata = new TProMetadata().FromDictionary(profile.Metadata);
-            var model = new CreateProfessionalProfileViewModel<TProMetadata>
+            try
             {
-                ProfessionalInfo = profile.ProfessionalInfo,
-                Metadata = metadata
-            };
+                var service = new ProfileService();
+                var profile = service.GetProfileById(AuthenticatedUserProfile.Id);
+                var metadata = new TProMetadata().FromDictionary(profile.Metadata);
+                var model = new CreateProfessionalProfileViewModel<TProMetadata>
+                {
+                    ProfessionalInfo = profile.ProfessionalInfo,
+                    Metadata = metadata
+                };
 
-            return View(model);
+                return View(model);
+            }
+            catch (ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
         }
 
         // 
@@ -222,12 +250,17 @@ namespace Classy.DotNet.Mvc.Controllers
                     model.ProfessionalInfo, 
                     model.Metadata.ToDictionary(), 
                     "CreateProfessionalProfile");
+                
                 return RedirectToRoute("MyProfile");
             }
-            catch(ClassyException cve)
+            catch (ClassyException cvx)
             {
-                AddModelErrors(cve);
-                return View(model);
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                    return View(model);
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
         }
 
@@ -237,36 +270,46 @@ namespace Classy.DotNet.Mvc.Controllers
         [ExportModelStateToTempData]
         public ActionResult ContactProfessional(ContactProfessionalViewModel model)
         {
-            var service = new ProfileService();
-            var profile = service.GetProfileById(model.ProfessionalProfileId);
-            if (profile == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "invalid profile id");
+            try
+            {
+                var service = new ProfileService();
+                var profile = service.GetProfileById(model.ProfessionalProfileId);
 
-            // when user is not logged-in, ReplyToEmail is required
-            if (!Request.IsAuthenticated && string.IsNullOrEmpty(model.ReplyToEmail))
-            {
-                ModelState.AddModelError("ReplyToEmail", "Please enter reply-to email");
-            }
-            
-            if (ModelState.IsValid)
-            {
-                var metadata = new TProMetadata();
-                metadata.FromDictionary(profile.Metadata);
-                var args = new ContactProfessionalArgs<TProMetadata>
+                // when user is not logged-in, ReplyToEmail is required
+                if (!Request.IsAuthenticated && string.IsNullOrEmpty(model.ReplyToEmail))
                 {
-                    ReplyToEmail = (Request.IsAuthenticated) ? (User.Identity as ClassyIdentity).Profile.ContactInfo.Email : model.ReplyToEmail,
-                    Subject = model.Subject,
-                    Content = model.Content,
-                    ProfessionalProfile = profile,
-                    TypedMetadata = metadata
-                };
+                    ModelState.AddModelError("ReplyToEmail", "Please enter reply-to email");
+                }
 
-                if (OnContactProfessional != null)
-                    OnContactProfessional(this, args);
+                if (ModelState.IsValid)
+                {
+                    var metadata = new TProMetadata();
+                    metadata.FromDictionary(profile.Metadata);
+                    var args = new ContactProfessionalArgs<TProMetadata>
+                    {
+                        ReplyToEmail = (Request.IsAuthenticated) ? (User.Identity as ClassyIdentity).Profile.ContactInfo.Email : model.ReplyToEmail,
+                        Subject = model.Subject,
+                        Content = model.Content,
+                        ProfessionalProfile = profile,
+                        TypedMetadata = metadata
+                    };
 
-                var analytics = new AnalyticsService();
-                analytics.LogActivity(Request.IsAuthenticated ? (User.Identity as ClassyIdentity).Profile.Id : "guest", ActivityPredicate.ProContact, model.ProfessionalProfileId);
+                    if (OnContactProfessional != null)
+                        OnContactProfessional(this, args);
 
-                TempData["ContactSuccess"] = "ההודעה נשלחה. בעל המקצוע יצור עמך קשר בכתובת האימייל שהזנת בטופס הפניה";
+                    var analytics = new AnalyticsService();
+                    analytics.LogActivity(Request.IsAuthenticated ? (User.Identity as ClassyIdentity).Profile.Id : "guest", ActivityPredicate.ProContact, model.ProfessionalProfileId);
+
+                    TempData["ContactSuccess"] = "ההודעה נשלחה. בעל המקצוע יצור עמך קשר בכתובת האימייל שהזנת בטופס הפניה";
+                }
+            }
+            catch (ClassyException cvx)
+            {
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
 
             return RedirectToRoute("PublicProfile", new { profileId = model.ProfessionalProfileId });
@@ -286,10 +329,10 @@ namespace Classy.DotNet.Mvc.Controllers
             }
             catch (ClassyException cvx)
             {
-                AddModelErrors(cvx);
+                return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
 
-            return Json(new { IsValid = true });
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         #endregion

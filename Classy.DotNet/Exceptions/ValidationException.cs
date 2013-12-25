@@ -16,10 +16,18 @@ namespace Classy.DotNet
 
     public class ClassyException : Exception
     {
+        public HttpStatusCode StatusCode { get; set; }
         public IList<ValidationError> Errors { get; private set; }
+
+        public ClassyException(HttpStatusCode statusCode, string message)
+            : base(message)
+        {
+            StatusCode = statusCode;
+        }
 
         public ClassyException(string errorCode) : base()
         {
+            StatusCode = HttpStatusCode.BadRequest;
             Errors = new List<ValidationError> {
                 new ValidationError {
                     ErrorCode = errorCode
@@ -29,7 +37,13 @@ namespace Classy.DotNet
 
         public ClassyException(IList<ValidationError> errors) : base() 
         {
+            StatusCode = HttpStatusCode.BadRequest;
             Errors = errors;
+        }
+
+        public bool IsValidationError()
+        {
+            return StatusCode == HttpStatusCode.BadRequest;
         }
     }
 
@@ -49,12 +63,16 @@ namespace Classy.DotNet
 
         public static ClassyException ToClassyException(this WebException wex)
         {
-            var badRequest = wex.GetResponseBody().FromJson<BadRequest>();
-            if (badRequest.ResponseStatus.Errors.Count == 0)
+            if (wex.IsBadRequest())
             {
-                return new ClassyException(badRequest.ResponseStatus.Message);
+                var badRequest = wex.GetResponseBody().FromJson<BadRequest>();
+                if (badRequest.ResponseStatus.Errors.Count == 0)
+                {
+                    return new ClassyException(badRequest.ResponseStatus.Message);
+                }
+                return new ClassyException(badRequest.ResponseStatus.Errors);
             }
-            return new ClassyException(badRequest.ResponseStatus.Errors);
+            else return new ClassyException((wex.Response as HttpWebResponse).StatusCode, wex.Message);
         }
     }
 }

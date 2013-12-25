@@ -31,20 +31,34 @@ namespace Classy.DotNet.Services
 
         public ProfileView GetProfileById(string profileId, bool logImpression, bool includeSocialConnections, bool includeReviews, bool includeListings)
         {
-            var client = ClassyAuth.GetWebClient();
-            var url = string.Format(GET_PROFILE_BY_ID_URL, profileId, logImpression, includeSocialConnections, includeReviews, includeListings);
-            var profileJson = client.DownloadString(url);
-            var profile = profileJson.FromJson<ProfileView>();
-            return profile;
+            try
+            {
+                var client = ClassyAuth.GetWebClient();
+                var url = string.Format(GET_PROFILE_BY_ID_URL, profileId, logImpression, includeSocialConnections, includeReviews, includeListings);
+                var profileJson = client.DownloadString(url);
+                var profile = profileJson.FromJson<ProfileView>();
+                return profile;
+            }
+            catch(WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
 
         public ProfileView GetAuthenticatedProfile()
         {
-            var client = ClassyAuth.GetAuthenticatedWebClient();
-            var url = GET_AUTHENTICATED_PROFILE;
-            var profileJson = client.DownloadString(url);
-            var profile = profileJson.FromJson<ProfileView>();
-            return profile;
+            try
+            {
+                var client = ClassyAuth.GetAuthenticatedWebClient();
+                var url = GET_AUTHENTICATED_PROFILE;
+                var profileJson = client.DownloadString(url);
+                var profile = profileJson.FromJson<ProfileView>();
+                return profile;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
 
         public ProfileView UpdateProfile(string profileId, ProfessionalInfoView proInfo, IDictionary<string, string> metadata, string updateType)
@@ -65,29 +79,32 @@ namespace Classy.DotNet.Services
             }
             catch(WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
         }
 
         public IList<ProfileView> SearchProfiles(string displayName, string category, LocationView location, IDictionary<string, string> metadata, bool professionalsOnly)
         {
-            var client = ClassyAuth.GetWebClient();
-            var url = string.Format(SEARCH_PROFILES_URL, displayName);
-            var data = new
+            try
             {
-                DisplayName = displayName,
-                Category = category,
-                Location = location,
-                Metadata = metadata,
-                ProfessionalsOnly = professionalsOnly
-            }.ToJson();
-            var profilesJson = client.UploadString(url, data);
-            var profiles = profilesJson.FromJson<IList<ProfileView>>();
-            return profiles;
+                var client = ClassyAuth.GetWebClient();
+                var url = string.Format(SEARCH_PROFILES_URL, displayName);
+                var data = new
+                {
+                    DisplayName = displayName,
+                    Category = category,
+                    Location = location,
+                    Metadata = metadata,
+                    ProfessionalsOnly = professionalsOnly
+                }.ToJson();
+                var profilesJson = client.UploadString(url, data);
+                var profiles = profilesJson.FromJson<IList<ProfileView>>();
+                return profiles;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
 
         public ProxyClaimView ClaimProfileProxy(
@@ -95,21 +112,35 @@ namespace Classy.DotNet.Services
             ProfessionalInfoView proInfo,
             IDictionary<string, string> metadata)
         {
-            var client = ClassyAuth.GetAuthenticatedWebClient();
-            var url = string.Format(CLAIM_AGENT_PROXY_URL, proxyId);
-            var data = string.Format(CLAIM_AGENT_PROXY_DATA, proInfo.ToJson(), metadata.ToJson());
-            var claimJson = client.UploadString(url, data);
-            var claim = claimJson.FromJson<ProxyClaimView>();
-            return claim;
+            try
+            {
+                var client = ClassyAuth.GetAuthenticatedWebClient();
+                var url = string.Format(CLAIM_AGENT_PROXY_URL, proxyId);
+                var data = string.Format(CLAIM_AGENT_PROXY_DATA, proInfo.ToJson(), metadata.ToJson());
+                var claimJson = client.UploadString(url, data);
+                var claim = claimJson.FromJson<ProxyClaimView>();
+                return claim;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
 
         public ProxyClaimView ApproveProxyClaim(string claimId)
         {
-            var client = ClassyAuth.GetAuthenticatedWebClient();
-            var url = string.Format(APPROVE_PROXY_CLAIM_URL, claimId);
-            var claimJson = client.UploadString(url, "{}");
-            var claim = claimJson.FromJson<ProxyClaimView>();
-            return claim;
+            try
+            {
+                var client = ClassyAuth.GetAuthenticatedWebClient();
+                var url = string.Format(APPROVE_PROXY_CLAIM_URL, claimId);
+                var claimJson = client.UploadString(url, "{}");
+                var claim = claimJson.FromJson<ProxyClaimView>();
+                return claim;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
         }
 
         public void FollowProfile(string username)
@@ -122,11 +153,7 @@ namespace Classy.DotNet.Services
             }
             catch (WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
         }
     }

@@ -10,6 +10,7 @@ using Classy.DotNet.Services;
 using Classy.Models.Response;
 using ServiceStack.Text;
 using Classy.DotNet.Mvc.ActionFilters;
+using System.Net;
 
 
 namespace Classy.DotNet.Mvc.Controllers
@@ -90,8 +91,12 @@ namespace Classy.DotNet.Mvc.Controllers
             }
             catch(ClassyException cvx)
             {
-                AddModelErrors(cvx);
-                return View(string.Concat("Create", ListingTypeName));
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                    return View(string.Concat("Create", ListingTypeName));
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
         }
 
@@ -102,21 +107,28 @@ namespace Classy.DotNet.Mvc.Controllers
         [ImportModelStateFromTempData]
         public ActionResult GetListingById(string listingId)
         {
-            var service = new ListingService();
-            var listing = service.GetListingById(
-                listingId,
-                true,
-                true,
-                true,
-                true,
-                true);
-            var listingMetadata = new TListingMetadata().FromDictionary(listing.Metadata);
-            var model = new ListingDetailsViewModel<TListingMetadata>
+            try
             {
-                Listing = listing,
-                Metadata = listingMetadata
-            };
-            return View(string.Concat(ListingTypeName,"Details"), model);
+                var service = new ListingService();
+                var listing = service.GetListingById(
+                    listingId,
+                    true,
+                    true,
+                    true,
+                    true,
+                    true);
+                var listingMetadata = new TListingMetadata().FromDictionary(listing.Metadata);
+                var model = new ListingDetailsViewModel<TListingMetadata>
+                {
+                    Listing = listing,
+                    Metadata = listingMetadata
+                };
+                return View(string.Concat(ListingTypeName, "Details"), model);
+            }
+            catch(ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
         }
 
         //
@@ -134,7 +146,11 @@ namespace Classy.DotNet.Mvc.Controllers
             }
             catch(ClassyException cvx)
             {
-                AddModelErrors(cvx);
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
 
             return RedirectToAction("GetListingById", new { listingId = listingId });        
@@ -154,7 +170,11 @@ namespace Classy.DotNet.Mvc.Controllers
             }
             catch (ClassyException cvx)
             {
-                AddModelErrors(cvx);
+                if (cvx.IsValidationError())
+                {
+                    AddModelErrors(cvx);
+                }
+                else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
             }
 
             return Json(new { IsValid = true });

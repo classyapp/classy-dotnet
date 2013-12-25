@@ -50,11 +50,7 @@ namespace Classy.DotNet.Services
             }
             catch(WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
 
             // add media files
@@ -83,16 +79,23 @@ namespace Classy.DotNet.Services
             bool IncludeFavoritedByProfiles,
             bool LogImpression)
         {
-            var client = ClassyAuth.GetWebClient();
-            var url = string.Format(GET_LISTING_BY_ID_URL, listingId);
-            if (IncludeComments) url = string.Concat(url, "&includecomments=true");
-            if (IncludeProfile) url = string.Concat(url, "&includeprofile=true");
-            if (IncludeCommenterProfiles) url = string.Concat(url, "&includecommenterprofiles=true");
-            if (IncludeFavoritedByProfiles) url = string.Concat(url, "&includefavoritedbyprofiles=true");
-            if (LogImpression) url = string.Concat(url, "&logimperssion=true");
-            var listingJson = client.DownloadString(url);
-            var listing = listingJson.FromJson<ListingView>();
-            return listing;
+            try
+            {
+                var client = ClassyAuth.GetWebClient();
+                var url = string.Format(GET_LISTING_BY_ID_URL, listingId);
+                if (IncludeComments) url = string.Concat(url, "&includecomments=true");
+                if (IncludeProfile) url = string.Concat(url, "&includeprofile=true");
+                if (IncludeCommenterProfiles) url = string.Concat(url, "&includecommenterprofiles=true");
+                if (IncludeFavoritedByProfiles) url = string.Concat(url, "&includefavoritedbyprofiles=true");
+                if (LogImpression) url = string.Concat(url, "&logimperssion=true");
+                var listingJson = client.DownloadString(url);
+                var listing = listingJson.FromJson<ListingView>();
+                return listing;
+            }
+            catch(WebException wex)
+            { 
+                throw wex.ToClassyException(); 
+            }
         }
 
         public CommentView PostComment(string listingId, string content)
@@ -107,11 +110,7 @@ namespace Classy.DotNet.Services
             }
             catch(WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
         }
 
@@ -125,11 +124,7 @@ namespace Classy.DotNet.Services
             }
             catch (WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
         }
 

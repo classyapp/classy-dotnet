@@ -67,13 +67,20 @@ namespace Classy.DotNet.Mvc.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult PostProfileReview(string profileId)
         {
-            var service = new ProfileService();
-            var profile = service.GetProfileById(profileId);
-            var model = new ProfileReviewViewModel<TProMetadata, TReviewSubCriteria>
+            try
             {
-                IsProxy = profile.IsProxy
-            };
-            return View(model);
+                var service = new ProfileService();
+                var profile = service.GetProfileById(profileId);
+                var model = new ProfileReviewViewModel<TProMetadata, TReviewSubCriteria>
+                {
+                    IsProxy = profile.IsProxy
+                };
+                return View(model);
+            }
+            catch(ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
         }
 
         //
@@ -104,11 +111,11 @@ namespace Classy.DotNet.Mvc.Controllers
                 }
                 catch(ClassyException cvx)
                 {
-                    AddModelErrors(cvx);
-                }
-                catch(Exception)
-                {
-                    throw;
+                    if (cvx.IsValidationError())
+                    {
+                        AddModelErrors(cvx);
+                    }
+                    else return new HttpStatusCodeResult(cvx.StatusCode, cvx.Message);
                 }
             }
             return View(model);

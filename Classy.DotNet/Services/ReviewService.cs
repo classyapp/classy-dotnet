@@ -39,13 +39,9 @@ namespace Classy.DotNet.Services
                 var reviewResponse = reviewJson.FromJson<PostReviewResponse>();
                 return reviewResponse;
             }
-            catch(WebException wex)
+            catch (WebException wex)
             {
-                if (wex.IsBadRequest())
-                {
-                    throw wex.ToClassyException();
-                }
-                throw wex;
+                throw wex.ToClassyException();
             }
         }
     }
