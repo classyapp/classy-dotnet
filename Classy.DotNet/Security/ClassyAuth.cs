@@ -286,7 +286,7 @@ namespace Classy.DotNet.Security
                 context.User = principal;
                 return true;
             }
-            catch (WebException wex)
+            catch (ClassyException cex)
             {
                 ClearAuthCookies();
                 return false;

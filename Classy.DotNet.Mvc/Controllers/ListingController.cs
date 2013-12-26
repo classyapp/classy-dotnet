@@ -50,6 +50,13 @@ namespace Classy.DotNet.Mvc.Controllers
             );
 
             routes.MapRoute(
+                name: string.Concat("Search", ListingTypeName),
+                url: string.Concat(ListingTypeName.ToLower(), "/find/{tag}"),
+                defaults: new { controller = ListingTypeName, action = "Search", tag = "" },
+                namespaces: new string[] { Namespace }
+            );
+
+            routes.MapRoute(
                 name: string.Concat(ListingTypeName, "Details"),
                 url: string.Concat(ListingTypeName.ToLower(), "/{listingId}/{slug}"),
                 defaults: new { controller = ListingTypeName, action = "GetListingById", slug = "show" },
@@ -178,6 +185,42 @@ namespace Classy.DotNet.Mvc.Controllers
             }
 
             return Json(new { IsValid = true });
+        }
+
+        //
+        // GET: /{ListingTypeName}/find/{tag}
+        //
+        [AcceptVerbs(HttpVerbs.Get)]
+        [ImportModelStateFromTempData]
+        public ActionResult Search(SearchListingsViewModel<TListingMetadata> model)
+        {
+            try
+            {
+                var service = new ListingService();
+                var listings = service.SearchListings(
+                    model.Tag,
+                    model.ListingType,
+                    model.Metadata != null ? model.Metadata.ToDictionary() : null,
+                    model.PriceMin,
+                    model.PriceMax,
+                    model.Location);
+                model.Results = listings;
+
+                return View(model);
+            }
+            catch(ClassyException cex)
+            {
+                return new HttpStatusCodeResult(cex.StatusCode, cex.Message);
+            }
+        }
+
+        // 
+        // POST: /{ListingTypeName}/find/{tag}
+        [AcceptVerbs(HttpVerbs.Post)]
+        [ExportModelStateToTempData]
+        public ActionResult Search(SearchListingsViewModel<TListingMetadata> model, object dummyforpost)
+        {
+            return Search(model);
         }
     }
 }

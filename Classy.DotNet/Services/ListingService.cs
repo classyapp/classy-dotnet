@@ -18,7 +18,8 @@ namespace Classy.DotNet.Services
         private readonly string ADD_EXTERNAL_MEDIA_URL = ENDPOINT_BASE_URL + "/listings/{0}/media";
         private readonly string PUBLISH_LISTING_URL = ENDPOINT_BASE_URL + "/listings/{0}/publish";
         // get listings
-        private readonly string GET_LISTING_BY_ID_URL = ENDPOINT_BASE_URL + "/listings/{0}?"; 
+        private readonly string GET_LISTING_BY_ID_URL = ENDPOINT_BASE_URL + "/listings/{0}?";
+        private readonly string SEARCH_LISTINGS_URL = ENDPOINT_BASE_URL + "/listings/search";
         // post comment
         private readonly string POST_COMMENT_URL = ENDPOINT_BASE_URL + "/listings/{0}/comments/new";
         // favorite listing
@@ -95,6 +96,37 @@ namespace Classy.DotNet.Services
             catch(WebException wex)
             { 
                 throw wex.ToClassyException(); 
+            }
+        }
+        
+        public IList<ListingView> SearchListings(
+            string tag,
+            string listingType,
+            IDictionary<string, string> metadata,
+            double? priceMin,
+            double? priceMax,
+            LocationView location)
+        {
+            try
+            {
+                var client = ClassyAuth.GetWebClient();
+                var url = SEARCH_LISTINGS_URL;
+                var data = new
+                {
+                    Tag = tag,
+                    ListingType = listingType,
+                    Metadata = metadata,
+                    PriceMin = priceMin,
+                    PriceMax = priceMax,
+                    Location = location
+                }.ToJson();
+                var listingsJson = client.UploadString(url, data);
+                var listings = listingsJson.FromJson<IList<ListingView>>();
+                return listings;
+            }
+            catch(WebException wex)
+            {
+                throw wex.ToClassyException();
             }
         }
 
