@@ -13,7 +13,7 @@ namespace Classy.DotNet.Services
 {
     public class ProfileService : ServiceBase
     {
-        private readonly string GET_PROFILE_BY_ID_URL = ENDPOINT_BASE_URL + "/profile/{0}?LogImpression={1}&IncludeFollowedByProfiles={2}&IncludeFollowingProfiles={2}&IncludeReviews={3}&IncludeListings={4}";
+        private readonly string GET_PROFILE_BY_ID_URL = ENDPOINT_BASE_URL + "/profile/{0}?LogImpression={1}&IncludeFollowedByProfiles={2}&IncludeFollowingProfiles={2}&IncludeReviews={3}&IncludeListings={4}&IncludeCollections={5}";
         private readonly string UPDATE_PROFILE_URL = ENDPOINT_BASE_URL + "/profile/{0}";
         private readonly string SEARCH_PROFILES_URL = ENDPOINT_BASE_URL + "/profile/search?";
         private readonly string CLAIM_AGENT_PROXY_URL = ENDPOINT_BASE_URL + "/profile/{0}/claim";
@@ -26,15 +26,15 @@ namespace Classy.DotNet.Services
 
         public ProfileView GetProfileById(string profileId)
         {
-            return GetProfileById(profileId, false, false, false, false);
+            return GetProfileById(profileId, false, false, false, false, false);
         }
 
-        public ProfileView GetProfileById(string profileId, bool logImpression, bool includeSocialConnections, bool includeReviews, bool includeListings)
+        public ProfileView GetProfileById(string profileId, bool logImpression, bool includeSocialConnections, bool includeReviews, bool includeListings, bool includeCollections)
         {
             try
             {
                 var client = ClassyAuth.GetWebClient();
-                var url = string.Format(GET_PROFILE_BY_ID_URL, profileId, logImpression, includeSocialConnections, includeReviews, includeListings);
+                var url = string.Format(GET_PROFILE_BY_ID_URL, profileId, logImpression, includeSocialConnections, includeReviews, includeListings, includeCollections);
                 var profileJson = client.DownloadString(url);
                 var profile = profileJson.FromJson<ProfileView>();
                 return profile;

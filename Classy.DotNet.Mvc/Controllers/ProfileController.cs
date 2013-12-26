@@ -103,7 +103,7 @@ namespace Classy.DotNet.Mvc.Controllers
             try
             {
                 var service = new ProfileService();
-                var profile = service.GetProfileById(profileId, true, true, true, true);
+                var profile = service.GetProfileById(profileId, true, true, true, true, true);
                 var metadata = new TProMetadata().FromDictionary(profile.Metadata);
                 var subCriteria = new TReviewSubCriteria().FromDictionary(profile.ReviewAverageSubCriteria);
                 var model = new PublicProfileViewModel<TProMetadata, TReviewSubCriteria>

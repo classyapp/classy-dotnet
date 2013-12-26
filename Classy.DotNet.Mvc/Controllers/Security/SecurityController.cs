@@ -71,7 +71,15 @@ namespace Classy.DotNet.Mvc.Controllers.Security
             {
                 RedirectUrl = Request.UrlReferrer != null ? Request.UrlReferrer.ToString() : "~/"
             };
-            return View(model);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("LoginModal", model);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

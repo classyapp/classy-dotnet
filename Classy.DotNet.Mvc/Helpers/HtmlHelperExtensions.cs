@@ -39,7 +39,7 @@ namespace Classy.DotNet.Mvc
         public static MvcHtmlString TriggerListingActionLink(this System.Web.Mvc.HtmlHelper html, string linkText, string actionToTrigger, ListingView listing, bool requireLogin)
         {
             var needsAuth = requireLogin && !html.ViewContext.HttpContext.User.Identity.IsAuthenticated;
-            string link = "<a href=\"#\" trigger-listing-action=\"{0}\" trigger-action-type=\"{1}\" trigger-action-id=\"{2}\" {3}>{4}</a>";
+            string link = "<a href=\"#\" trigger-listing-action=\"{0}\" listing-type=\"{1}\" listing-id=\"{2}\" {3}>{4}</a>";
             string output = string.Format(link, 
                 actionToTrigger, 
                 listing.ListingType.ToLower(), 
@@ -60,7 +60,7 @@ namespace Classy.DotNet.Mvc
 
         public static MvcHtmlString TriggerProfileActionLink(this System.Web.Mvc.HtmlHelper html, string linkText, string actionToTrigger, ProfileView profile, bool requireLogin)
         {
-            string link = "<a href=\"#\" trigger-profile-action=\"{0}\" trigger-action-id=\"{1}\" {2}>{3}</a>";
+            string link = "<a href=\"#\" trigger-profile-action=\"{0}\" profile-id=\"{1}\" {2}>{3}</a>";
             string output = string.Format(link,
                 actionToTrigger,
                 profile.UserName,

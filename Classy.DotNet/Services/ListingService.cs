@@ -14,17 +14,20 @@ namespace Classy.DotNet.Services
     public class ListingService : ServiceBase
     {
         // create listing
-        private readonly string CREATE_LISTING_URL = ENDPOINT_BASE_URL + "/listings/new";
-        private readonly string ADD_EXTERNAL_MEDIA_URL = ENDPOINT_BASE_URL + "/listings/{0}/media";
-        private readonly string PUBLISH_LISTING_URL = ENDPOINT_BASE_URL + "/listings/{0}/publish";
+        private readonly string CREATE_LISTING_URL = ENDPOINT_BASE_URL + "/listing/new";
+        private readonly string ADD_EXTERNAL_MEDIA_URL = ENDPOINT_BASE_URL + "/listing/{0}/media";
+        private readonly string PUBLISH_LISTING_URL = ENDPOINT_BASE_URL + "/listing/{0}/publish";
         // get listings
-        private readonly string GET_LISTING_BY_ID_URL = ENDPOINT_BASE_URL + "/listings/{0}?";
-        private readonly string SEARCH_LISTINGS_URL = ENDPOINT_BASE_URL + "/listings/search";
+        private readonly string GET_LISTING_BY_ID_URL = ENDPOINT_BASE_URL + "/listing/{0}?";
+        private readonly string SEARCH_LISTINGS_URL = ENDPOINT_BASE_URL + "/listing/search";
         // post comment
-        private readonly string POST_COMMENT_URL = ENDPOINT_BASE_URL + "/listings/{0}/comments/new";
+        private readonly string POST_COMMENT_URL = ENDPOINT_BASE_URL + "/listing/{0}/comment/new";
         // favorite listing
-        private readonly string FAVORITE_LISTING_URL = ENDPOINT_BASE_URL + "/listings/{0}/favorite";
+        private readonly string FAVORITE_LISTING_URL = ENDPOINT_BASE_URL + "/listing/{0}/favorite";
+        // collections
+        private readonly string CREATE_COLLECTION_URL = ENDPOINT_BASE_URL + "/collection/new";
 
+        #region // listings
         public ListingView CreateListing(
             string title, 
             string content,
@@ -159,6 +162,36 @@ namespace Classy.DotNet.Services
                 throw wex.ToClassyException();
             }
         }
+
+        #endregion
+
+        #region // collections
+
+        public CollectionView CreateCollection(
+            string title,
+            string content,
+            IList<string> listingIds)
+        {
+            try
+            {
+                var client = ClassyAuth.GetAuthenticatedWebClient();
+                var data = new
+                {
+                    Title = title,
+                    Content = content,
+                    IncludedListings = listingIds
+                }.ToJson();
+                var collectionJson = client.UploadString(CREATE_COLLECTION_URL, data);
+                var collection = collectionJson.FromJson<CollectionView>();
+                return collection;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
+        }
+
+        #endregion
 
         #region // upload file
 

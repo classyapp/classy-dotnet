@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Attributes\AuthorizeWithRedirect.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CollectionController.cs" />
     <Compile Include="Controllers\ContactProfessionalArgs.cs" />
     <Compile Include="Controllers\IMetadata.cs" />
     <Compile Include="Controllers\IReviewSubCriteria.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\Security\SecurityController.cs" />
+    <Compile Include="ViewModels\Collection\AddToCollectionViewModel.cs" />
     <Compile Include="ViewModels\Listing\SearchListingsViewModel.cs" />
     <Compile Include="ViewModels\Listing\CreateListingViewModel.cs" />
     <Compile Include="ViewModels\Listing\ListingDetailsViewModel.cs" />
