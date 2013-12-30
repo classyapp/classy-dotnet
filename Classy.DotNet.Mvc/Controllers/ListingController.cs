@@ -82,6 +82,20 @@ namespace Classy.DotNet.Mvc.Controllers
         {
             if (!ModelState.IsValid) return View(string.Concat("Create", ListingTypeName), model);
 
+            PricingInfoView pricingInfo = null;
+            if (model.PricingInfo != null)
+            {
+                pricingInfo = new PricingInfoView()
+                {
+                    SKU = model.PricingInfo.SKU,
+                    Price = model.PricingInfo.Price,
+                    CompareAtPrice = model.PricingInfo.CompareAtPrice,
+                    Quantity = model.PricingInfo.Quantity.Value,
+                    DomesticRadius = model.PricingInfo.DomesticRadius,
+                    DomesticShippingPrice = model.PricingInfo.DomesticShippingPrice,
+                    InternationalShippingPrice = model.PricingInfo.InternationalShippingPrice
+                };
+            }
             try
             {
                 var service = new ListingService();
@@ -89,7 +103,8 @@ namespace Classy.DotNet.Mvc.Controllers
                     model.Title,
                     model.Content,
                     ListingTypeName,
-                    model.Metadata != null ? model.Metadata.ToDictionary() : null,
+                    pricingInfo,
+                    (model.Metadata == null ? null : model.Metadata.ToDictionary()),
                     Request.Files);
 
                 TempData["CreateListingSuccess"] = listing;
