@@ -58,7 +58,9 @@
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\ReviewPostedArgs.cs" />
     <Compile Include="ActionFilters\ModelStateTransfer.cs" />
+    <Compile Include="Helpers\ListingActionTrigger.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Helpers\ProfileActionTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\Security\SecurityController.cs" />
     <Compile Include="ViewModels\Collection\AddToCollectionViewModel.cs" />

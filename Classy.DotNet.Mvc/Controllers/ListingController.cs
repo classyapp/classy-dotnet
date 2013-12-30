@@ -89,7 +89,7 @@ namespace Classy.DotNet.Mvc.Controllers
                     model.Title,
                     model.Content,
                     ListingTypeName,
-                    model.Metadata.ToDictionary(),
+                    model.Metadata != null ? model.Metadata.ToDictionary() : null,
                     Request.Files);
 
                 TempData["CreateListingSuccess"] = listing;

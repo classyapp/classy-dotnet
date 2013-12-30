@@ -298,7 +298,8 @@ namespace Classy.DotNet.Mvc.Controllers
                         OnContactProfessional(this, args);
 
                     var analytics = new AnalyticsService();
-                    analytics.LogActivity(Request.IsAuthenticated ? (User.Identity as ClassyIdentity).Profile.Id : "guest", ActivityPredicate.ProContact, model.ProfessionalProfileId);
+                    //TODO: this doesn't belong in the frontend 
+                    analytics.LogActivity(Request.IsAuthenticated ? (User.Identity as ClassyIdentity).Profile.Id : "guest", "contact-profile", model.ProfessionalProfileId);
 
                     TempData["ContactSuccess"] = "ההודעה נשלחה. בעל המקצוע יצור עמך קשר בכתובת האימייל שהזנת בטופס הפניה";
                 }

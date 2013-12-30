@@ -14,7 +14,7 @@ namespace Classy.DotNet.Services
     {
         private readonly string LOG_ACTIVITY_URL = ENDPOINT_BASE_URL + "/stats/push";
 
-        public TripleView LogActivity(string subjectId, ActivityPredicate predicate, string objectId)
+        public TripleView LogActivity(string subjectId, string predicate, string objectId)
         {
             try
             {

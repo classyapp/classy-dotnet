@@ -26,8 +26,12 @@ namespace Classy.DotNet.Services
         private readonly string FAVORITE_LISTING_URL = ENDPOINT_BASE_URL + "/listing/{0}/favorite";
         // collections
         private readonly string CREATE_COLLECTION_URL = ENDPOINT_BASE_URL + "/collection/new";
+        private readonly string ADD_LISTINGS_TO_CLECTION_URL = ENDPOINT_BASE_URL + "/collection/{0}/listing/new";
+        private readonly string GET_COLLECTIONS_FOR_PROFILE_URL = ENDPOINT_BASE_URL + "/profile/{0}/collection/list";
+        private readonly string GET_COLLECTION_BY_ID_URL = ENDPOINT_BASE_URL + "/collection/{0}?IncludeListings={1}&IncreaseViewCounter={2}&IncludeViewCounterOnListings={3}";
 
         #region // listings
+
         public ListingView CreateListing(
             string title, 
             string content,
@@ -167,10 +171,40 @@ namespace Classy.DotNet.Services
 
         #region // collections
 
+        public CollectionView GetCollectionById(string collectionId, bool includeListings, bool increaseViewCounter, bool increaseViewCounterOnListings)
+        {
+            try
+            {
+                var client = ClassyAuth.GetWebClient();
+                var collectionJson = client.DownloadString(string.Format(GET_COLLECTION_BY_ID_URL, collectionId, includeListings, increaseViewCounter, increaseViewCounterOnListings));
+                var collection = collectionJson.FromJson<CollectionView>();
+                return collection;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
+        }
+
+        public IList<CollectionView> GetCollectionsByProfileId(string profileId, bool includeListings, bool increaseViewCounter, bool increaseViewCounterOnListings)
+        {
+            try
+            {
+                var client = ClassyAuth.GetWebClient();
+                var collectionsJson = client.DownloadString(string.Format(GET_COLLECTIONS_FOR_PROFILE_URL, profileId));
+                var collections = collectionsJson.FromJson<IList<CollectionView>>();
+                return collections;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
+        }
+
         public CollectionView CreateCollection(
             string title,
             string content,
-            IList<string> listingIds)
+            string[] listingIds)
         {
             try
             {
@@ -182,6 +216,29 @@ namespace Classy.DotNet.Services
                     IncludedListings = listingIds
                 }.ToJson();
                 var collectionJson = client.UploadString(CREATE_COLLECTION_URL, data);
+                var collection = collectionJson.FromJson<CollectionView>();
+                return collection;
+            }
+            catch (WebException wex)
+            {
+                throw wex.ToClassyException();
+            }
+        }
+
+        public CollectionView AddListingToCollection(
+            string collectionId,
+            string[] listingIds)
+        {
+            try
+            {
+                var client = ClassyAuth.GetAuthenticatedWebClient();
+                var url = string.Format(ADD_LISTINGS_TO_CLECTION_URL, collectionId);
+                var data = new
+                {
+                    CollectionId = collectionId,
+                    IncludedListings = listingIds
+                }.ToJson();
+                var collectionJson = client.UploadString(url, data);
                 var collection = collectionJson.FromJson<CollectionView>();
                 return collection;
             }
