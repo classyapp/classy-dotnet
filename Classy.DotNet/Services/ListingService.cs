@@ -36,6 +36,8 @@ namespace Classy.DotNet.Services
             string title, 
             string content,
             string listingType,
+            //TODO: Investigate combining Request & Response models?
+            PricingInfoView pricingInfo,
             IDictionary<string, string> metadata,
             HttpFileCollectionBase files)
         {
@@ -45,6 +47,7 @@ namespace Classy.DotNet.Services
                 Title = title, 
                 Content = content,
                 ListingType = listingType,
+                Pricing = pricingInfo,
                 Metadata = metadata
 
             }.ToJson();
