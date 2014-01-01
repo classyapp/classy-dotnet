@@ -63,7 +63,7 @@ namespace Classy.DotNet.Security
                 client.Method = "POST";
                 client.ContentType = "application/json";
                 client.Accept = "application/json";
-                client.Headers.Add("X-ApiKey", _sApiKey);
+                client.Headers.Add("X-Classy-Env", GetEnvHeader());
                 var stream = client.GetRequestStream();
                 stream.Write(credsBytes, 0, credsBytes.Length);
                 stream.Close();
@@ -92,7 +92,7 @@ namespace Classy.DotNet.Security
                 client.Method = "GET";
                 client.ContentType = "application/json";
                 client.Accept = "application/json";
-                client.Headers.Add("X-ApiKey", _sApiKey);
+                client.Headers.Add("X-Classy-Env", GetEnvHeader());
                 var response = client.GetResponse() as HttpWebResponse;
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -180,8 +180,19 @@ namespace Classy.DotNet.Security
             client.Encoding = Encoding.UTF8;
             client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             client.Headers.Add(HttpRequestHeader.Accept, "application/json");
-            client.Headers.Add("X-ApiKey", ApiKey);
+            client.Headers.Add("X-Classy-Env", GetEnvHeader());
             return client;
+        }
+
+        private static string GetEnvHeader()
+        {
+            return new
+            {
+                CultureCode = "iw-HE",
+                CountryCode = "IL",
+                CurrencyCode = "ILS",
+                AppId = ApiKey
+            }.ToJson();
         }
 
         public static WebClient GetAuthenticatedWebClient(bool throwIfNull = true)
@@ -198,7 +209,7 @@ namespace Classy.DotNet.Security
             client.Encoding = Encoding.UTF8;
             client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
             client.Headers.Add(HttpRequestHeader.Accept, "application/json");
-            client.Headers.Add("X-ApiKey", ApiKey);
+            client.Headers.Add("X-Classy-Env", GetEnvHeader());
             var cookies = new CookieContainer();
             foreach (var n in AuthCookieNames)
             {
@@ -220,7 +231,7 @@ namespace Classy.DotNet.Security
             }
 
             var client = WebRequest.Create(url) as HttpWebRequest;
-            client.Headers.Add("X-ApiKey", ApiKey);
+            client.Headers.Add("X-Classy-Env", GetEnvHeader());
             var cookies = new CookieContainer();
             foreach (var n in AuthCookieNames)
             {
