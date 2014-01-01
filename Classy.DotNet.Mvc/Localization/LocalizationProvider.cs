@@ -11,6 +11,8 @@ namespace Classy.DotNet.Mvc.Localization
 {
     public class MyLocalizationProvider : DataAnnotationsModelMetadataProvider
     {
+        public static string CULTURE_COOKIE_NAME = "classy.env.culture";
+
         protected override ModelMetadata CreateMetadata(
                              IEnumerable<Attribute> attributes ,
                              Type containerType ,
@@ -87,6 +89,17 @@ namespace Classy.DotNet.Mvc.Localization
 
             return base.CreateMetadata
               (attributes, containerType, modelAccessor, modelType, propertyName);
+        }
+
+        public static void Initialize()
+        {
+            // read cookies and set culture
+            var cookie = HttpContext.Current.Request.Cookies[CULTURE_COOKIE_NAME];
+            if (cookie != null)
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(cookie.Value);
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(cookie.Value);
+            }
         }
     }
 }

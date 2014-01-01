@@ -55,6 +55,7 @@
     <Compile Include="Security\ClassyRegistrationResponse.cs" />
     <Compile Include="Services\AnalyticsService.cs" />
     <Compile Include="Services\ListingService.cs" />
+    <Compile Include="Services\LocalizationService.cs" />
     <Compile Include="Services\ProfileService.cs" />
     <Compile Include="Services\ReviewService.cs" />
     <Compile Include="Services\ServiceBase.cs" />

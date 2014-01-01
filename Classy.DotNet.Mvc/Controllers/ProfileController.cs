@@ -123,7 +123,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         //
         // GET: /profile/{ProfileId}/claim
-        [Authorize]
+        [AuthorizeWithRedirect("Index")]
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult ClaimProxyProfile(string profileId)
         {
@@ -147,7 +147,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         //
         // POST: /profile/{proxyId}/claim
-        [Authorize]
+        [AuthorizeWithRedirect("Index")]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ClaimProxyProfile(ClaimProfileViewModel<TProMetadata> model)
         {
@@ -211,7 +211,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         // 
         // GET: /profile/me/gopro
-        [Authorize]
+        [AuthorizeWithRedirect("Index")]
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult CreateProfessionalProfile()
         {
@@ -236,7 +236,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         // 
         // POST: /profile/me/gopro
-        [Authorize]
+        [AuthorizeWithRedirect("Index")]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateProfessionalProfile(CreateProfessionalProfileViewModel<TProMetadata> model)
         {
@@ -319,7 +319,7 @@ namespace Classy.DotNet.Mvc.Controllers
         //
         // POST: /profile/{username}/follow
         //
-        [Authorize]
+        [AuthorizeWithRedirect("Index")]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult FollowProfile(string username)
         {

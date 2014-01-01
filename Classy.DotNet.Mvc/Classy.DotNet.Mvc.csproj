@@ -54,6 +54,7 @@
     <Compile Include="Controllers\IMetadata.cs" />
     <Compile Include="Controllers\IReviewSubCriteria.cs" />
     <Compile Include="Controllers\ListingController.cs" />
+    <Compile Include="Controllers\LocalizationController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\ReviewPostedArgs.cs" />
@@ -69,8 +70,10 @@
     <Compile Include="ViewModels\Listing\SearchListingsViewModel.cs" />
     <Compile Include="ViewModels\Listing\CreateListingViewModel.cs" />
     <Compile Include="ViewModels\Listing\ListingDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Localization\ManageResourcesViewModel.cs" />
     <Compile Include="ViewModels\Profiles\ContactProfessionalViewModel.cs" />
     <Compile Include="ViewModels\Profiles\CreateProfessionalProfileViewModel.cs" />
+    <Compile Include="ViewModels\Localization\EnvironmentSettingsViewModel.cs" />
     <Compile Include="ViewModels\Profiles\PublicProfileViewModel.cs" />
     <Compile Include="ViewModels\Profiles\SearchViewModel.cs" />
     <Compile Include="ViewModels\Reviews\ProfileReviewViewModel.cs" />

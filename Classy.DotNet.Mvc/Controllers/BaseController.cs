@@ -12,7 +12,6 @@ namespace Classy.DotNet.Mvc.Controllers
 {
     public abstract class BaseController : Controller
     {
-
         public string Namespace { get; private set; }
         
         public BaseController()
@@ -23,6 +22,12 @@ namespace Classy.DotNet.Mvc.Controllers
         public BaseController(string ns)
         {
             Namespace = ns;
+        }
+
+        protected override IAsyncResult BeginExecuteCore(AsyncCallback callback, object state)
+        {
+            Localization.MyLocalizationProvider.Initialize();
+            return base.BeginExecuteCore(callback, state);
         }
 
         public abstract void RegisterRoutes(RouteCollection routes);

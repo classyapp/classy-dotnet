@@ -188,7 +188,7 @@ namespace Classy.DotNet.Security
         {
             return new
             {
-                CultureCode = "iw-HE",
+                CultureCode = System.Threading.Thread.CurrentThread.CurrentUICulture.Name,
                 CountryCode = "IL",
                 CurrencyCode = "ILS",
                 AppId = ApiKey
