@@ -33,9 +33,11 @@ namespace Classy.DotNet.Mvc.ViewModels.Listing
     public class CreateListingViewModel<TListingMetadata>
     {
         // basic
-        [Required]
+        [Display(Name="CreateListing_Title")]
+        [Required(ErrorMessage="CreateListing_Title_Required")]
         public string Title { get; set; }
-        [Required]
+        [Display(Name = "CreateListing_Content")]
+        [Required(ErrorMessage="CreateListing_Content_Required")]
         public string Content { get; set; }
         public ProductPricingViewModel PricingInfo { get; set; }
         public LocationView Location { get; set; }
