@@ -11,7 +11,7 @@ using Classy.Models.Response;
 using ServiceStack.Text;
 using Classy.DotNet.Mvc.ActionFilters;
 using System.Net;
-
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc.Controllers
 {
@@ -28,7 +28,7 @@ namespace Classy.DotNet.Mvc.Controllers
         /// </summary>
         public override void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: string.Concat("Create", ListingTypeName),
                 url: string.Concat(ListingTypeName.ToLower(), "/new"),
                 defaults: new { controller = ListingTypeName, action = "CreateListing" },
@@ -49,14 +49,14 @@ namespace Classy.DotNet.Mvc.Controllers
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: string.Concat("Search", ListingTypeName),
                 url: string.Concat(ListingTypeName.ToLower(), "/find/{tag}"),
                 defaults: new { controller = ListingTypeName, action = "Search", tag = "" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: string.Concat(ListingTypeName, "Details"),
                 url: string.Concat(ListingTypeName.ToLower(), "/{listingId}/{slug}"),
                 defaults: new { controller = ListingTypeName, action = "GetListingById", slug = "show" },

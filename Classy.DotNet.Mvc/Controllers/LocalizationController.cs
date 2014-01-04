@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Classy.DotNet.Mvc.ViewModels.Localization;
 using Classy.DotNet.Services;
 using System.Web;
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc.Controllers
 {
@@ -28,7 +29,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "ManageResources",
                 url: "resource/manage",
                 defaults: new { controller = "Localization", action = "ManageResources" },

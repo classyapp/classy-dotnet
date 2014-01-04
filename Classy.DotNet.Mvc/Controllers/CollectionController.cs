@@ -22,7 +22,7 @@ namespace Classy.DotNet.Mvc.Controllers
         /// </summary>
         public override void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapRouteForSupportedLocales(
+            routes.MapRouteWithName(
                 name: "AddListingToCollection",
                 url: "collection/new",
                 defaults: new { controller = "Collection", action = "AddListingToCollection" },

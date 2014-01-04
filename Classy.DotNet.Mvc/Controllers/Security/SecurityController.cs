@@ -12,6 +12,7 @@ using Classy.Models.Response;
 using Classy.DotNet.Mvc.ViewModels.Security;
 using Classy.DotNet.Services;
 using ServiceStack.Text;
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc.Controllers.Security
 {
@@ -37,7 +38,7 @@ namespace Classy.DotNet.Mvc.Controllers.Security
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "Login",
                 url: "login",
                 defaults: new { controller = "Security", action = "Login" },
@@ -51,13 +52,13 @@ namespace Classy.DotNet.Mvc.Controllers.Security
                 namespaces: new string[] { Namespace }
                 );
 
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "Register",
                 url: "register",
                 defaults: new { controller = "Security", action = "Register" },
                 namespaces: new string[] { Namespace });
 
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "CompleteRegistration",
                 url: "register/more",
                 defaults: new { controller = "Security", action = "CompleteRegistration" },

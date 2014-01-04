@@ -77,6 +77,11 @@ namespace Classy.DotNet.Mvc
             return html.RouteLinkForCurrentLocale(listing.Title, string.Concat(listingType, "Details"), new { listingId = listing.Id, slug = ToSlug(listing.Title) });
         }
 
+        public static MvcHtmlString CollectionLink(this System.Web.Mvc.HtmlHelper html, CollectionView collection)
+        {
+            return html.RouteLinkForCurrentLocale(collection.Title, "CollectionDetails", new { collectionId = collection.Id, slug = ToSlug(collection.Title) });
+        }
+
         public static MvcHtmlString ProfileLink(this System.Web.Mvc.HtmlHelper html, ProfileView profile)
         {
             if (profile.ContactInfo == null && !profile.IsProfessional) return new MvcHtmlString("unknown");

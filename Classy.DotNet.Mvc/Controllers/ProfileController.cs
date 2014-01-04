@@ -39,7 +39,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRouteForSupportedLocales(
+            routes.MapRouteWithName(
                 name: "ClaimProxyProfile",
                 url: "profile/{profileId}/claim",
                 defaults: new { controller = "Profile", action = "ClaimProxyProfile" },
@@ -53,21 +53,21 @@ namespace Classy.DotNet.Mvc.Controllers
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRouteForSupportedLocales(
+            routes.MapRouteWithName(
                 name: "CreateProfessionalProfile",
                 url: "profile/me/gopro",
                 defaults: new { controller = "Profile", action = "CreateProfessionalProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRouteForSupportedLocales(
+            routes.MapRoute(
                 name: "FollowProfile",
                 url: "profile/{username}/follow",
                 defaults: new { controller = "Profile", action = "FollowProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRouteForSupportedLocales(
+            routes.MapRoute(
                 name: "ContactProfessional",
                 url: "profile/{ProfessionalProfileId}/contact",
                 defaults: new { controller = "Profile", action = "ContactProfessional" },

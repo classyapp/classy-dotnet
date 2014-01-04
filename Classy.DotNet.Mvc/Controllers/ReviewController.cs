@@ -13,6 +13,7 @@ using Classy.DotNet.Mvc.ViewModels.Reviews;
 using Classy.Models.Response;
 using ServiceStack.Text;
 using System.Web;
+using Classy.DotNet.Mvc.Localization; 
 
 namespace Classy.DotNet.Mvc.Controllers
 {
@@ -30,7 +31,7 @@ namespace Classy.DotNet.Mvc.Controllers
         /// </summary>
         public override void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "FindProfileToReview",
                 url: "profile/reviews/new",
                 defaults: new { controller = "Review", action = "FindProfileToReview" },
@@ -44,7 +45,7 @@ namespace Classy.DotNet.Mvc.Controllers
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteWithName(
                 name: "ReviewThanks",
                 url: "thanks",
                 defaults: new { controller = "Review", action = "ReviewThanks" },
