@@ -64,7 +64,7 @@ namespace Classy.DotNet.Mvc.Controllers
         public ActionResult EnvironmentSettings()
         {
             var model = GetEnvFromContext();
-            PopulateCultures(model);
+            //PopulateCultures(model);
             return PartialView(model);
         }
 
@@ -75,28 +75,28 @@ namespace Classy.DotNet.Mvc.Controllers
         public ActionResult EnvironmentSettings(EnvironmentSettingsViewModel model)
         {
             SetContextEnvFromModel(model);
-            PopulateCultures(model);
+            //PopulateCultures(model);
             return PartialView(model);
         }
 
-        private void PopulateCultures(EnvironmentSettingsViewModel model)
-        {
-            model.SupportedCulturesList = new SelectListItem[]
-                {
-                    new SelectListItem {
-                        Value = "en-US",
-                        Text = "English (US)"
-                    },
-                    new SelectListItem {
-                        Value = "he-IL",
-                        Text = "עברית"
-                    },
-                    new SelectListItem {
-                        Value = "fr-BE",
-                        Text = "Français"
-                    }
-                };
-        }
+        //private void PopulateCultures(EnvironmentSettingsViewModel model)
+        //{
+        //    model.SupportedCulturesList = new SelectListItem[]
+        //        {
+        //            new SelectListItem {
+        //                Value = "en-US",
+        //                Text = "English (US)"
+        //            },
+        //            new SelectListItem {
+        //                Value = "he-IL",
+        //                Text = "עברית"
+        //            },
+        //            new SelectListItem {
+        //                Value = "fr-BE",
+        //                Text = "Français"
+        //            }
+        //        };
+        //}
 
         private EnvironmentSettingsViewModel GetEnvFromContext()
         {
@@ -109,7 +109,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         private void SetContextEnvFromModel(EnvironmentSettingsViewModel model)
         {
-            Response.Cookies.Add(new System.Web.HttpCookie(Localization.MyLocalizationProvider.CULTURE_COOKIE_NAME)
+            Response.Cookies.Add(new System.Web.HttpCookie(Localization.Localizer.CULTURE_COOKIE_NAME)
             {
                 Value = model.CultureCode,
                 Expires = DateTime.UtcNow.AddYears(30)

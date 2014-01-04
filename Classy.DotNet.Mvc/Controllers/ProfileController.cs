@@ -13,6 +13,7 @@ using Classy.Models.Response;
 using ServiceStack.Text;
 using Classy.DotNet.Mvc.Attributes;
 using Classy.DotNet.Mvc.ActionFilters;
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc.Controllers
 {
@@ -31,49 +32,49 @@ namespace Classy.DotNet.Mvc.Controllers
         /// </summary>
         public override void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "MyProfile",
                 url: "profile/me",
                 defaults: new { controller = "Profile", action = "MyProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "ClaimProxyProfile",
                 url: "profile/{profileId}/claim",
                 defaults: new { controller = "Profile", action = "ClaimProxyProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "SearchProfiles",
                 url: "profile/search/{category}",
                 defaults: new { controller = "Profile", action = "Search", category = "" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "CreateProfessionalProfile",
                 url: "profile/me/gopro",
                 defaults: new { controller = "Profile", action = "CreateProfessionalProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "FollowProfile",
                 url: "profile/{username}/follow",
                 defaults: new { controller = "Profile", action = "FollowProfile" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "ContactProfessional",
                 url: "profile/{ProfessionalProfileId}/contact",
                 defaults: new { controller = "Profile", action = "ContactProfessional" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "PublicProfile",
                 url: "profile/{profileId}/{slug}",
                 defaults: new { controller = "Profile", action = "PublicProfile", slug = "public" },

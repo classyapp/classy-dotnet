@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.WebPages.Html;
 using System.Web.Mvc.Html;
 using System.Web.Mvc;
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc
 {
@@ -73,7 +74,7 @@ namespace Classy.DotNet.Mvc
 
         public static MvcHtmlString ListingLink(this System.Web.Mvc.HtmlHelper html, string listingType, ListingView listing)
         {
-            return html.RouteLink(listing.Title, string.Concat(listingType, "Details"), new { listingId = listing.Id, slug = ToSlug(listing.Title) });
+            return html.RouteLinkForCurrentLocale(listing.Title, string.Concat(listingType, "Details"), new { listingId = listing.Id, slug = ToSlug(listing.Title) });
         }
 
         public static MvcHtmlString ProfileLink(this System.Web.Mvc.HtmlHelper html, ProfileView profile)
@@ -82,8 +83,8 @@ namespace Classy.DotNet.Mvc
             var name = string.Empty;
             if (profile.IsProxy) name = profile.ProfessionalInfo.CompanyName;
             else if (profile.IsProfessional) name = profile.ProfessionalInfo.CompanyName;
-            else name = profile.ContactInfo.Name;
-            return html.RouteLink(name ?? profile.UserName, "PublicProfile", new { profileId = profile.Id, slug = ToSlug(name) });
+            else name = string.IsNullOrEmpty(profile.ContactInfo.Name) ? profile.UserName : profile.ContactInfo.Name;
+            return html.RouteLinkForCurrentLocale(name, "PublicProfile", new { profileId = profile.Id, slug = ToSlug(name) });
         }
 
         public static MvcHtmlString ToSlug(this System.Web.Mvc.HtmlHelper html, string content)

@@ -146,7 +146,7 @@ namespace Classy.DotNet.Security
                 client.Method = "POST";
                 client.ContentType = "application/json";
                 client.Accept = "application/json";
-                client.Headers.Add("X-ApiKey", _sApiKey);
+                client.Headers.Add("X-Classy-Env", GetEnvHeader());
                 var stream = client.GetRequestStream();
                 stream.Write(regBytes, 0, regBytes.Length);
                 stream.Close();

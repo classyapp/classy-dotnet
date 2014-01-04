@@ -90,7 +90,7 @@ namespace Classy.DotNet.Mvc.Controllers.Security
                 var isValid = ClassyAuth.AuthenticateUser(model.Email, model.Password, model.RememberMe);
                 if (!isValid)
                 {
-                    ModelState.AddModelError("Invalid", "שם המשתמש או הסיסמה שגויים");
+                    ModelState.AddModelError("Invalid", Localization.Localizer.Get("Login_InvalidCredentials"));
                     return View(model);
                 }
                 else

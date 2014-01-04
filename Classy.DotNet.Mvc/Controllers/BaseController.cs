@@ -1,4 +1,5 @@
-﻿using Classy.DotNet.Security;
+﻿using Classy.DotNet.Mvc.Localization;
+using Classy.DotNet.Security;
 using Classy.Models.Response;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace Classy.DotNet.Mvc.Controllers
 
         protected override IAsyncResult BeginExecuteCore(AsyncCallback callback, object state)
         {
-            Localization.MyLocalizationProvider.Initialize();
+            Localization.Localizer.Initialize(RouteData.DataTokens[Localizer.ROUTE_LOCALE_DATA_TOKEN_KEY] as string);
             return base.BeginExecuteCore(callback, state);
         }
 

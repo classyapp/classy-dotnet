@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Classy.DotNet.Mvc.ViewModels.Collection;
 using Classy.DotNet.Mvc.ActionFilters;
 using Classy.DotNet.Services;
+using Classy.DotNet.Mvc.Localization;
 
 namespace Classy.DotNet.Mvc.Controllers
 {
@@ -21,14 +22,14 @@ namespace Classy.DotNet.Mvc.Controllers
         /// </summary>
         public override void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "AddListingToCollection",
                 url: "collection/new",
                 defaults: new { controller = "Collection", action = "AddListingToCollection" },
                 namespaces: new string[] { Namespace }
             );
 
-            routes.MapRoute(
+            routes.MapRouteForSupportedLocales(
                 name: "CollectionDetails",
                 url: "collection/{collectionId}/{slug}",
                 defaults: new { controller = "Collection", action = "CollectionDetails", slug = "show" },

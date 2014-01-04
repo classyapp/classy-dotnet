@@ -13,7 +13,6 @@ namespace Classy.DotNet.Mvc.ViewModels.Localization
         [Display(Name = "EnvSettings_Culture")]
         public string CultureCode { get; set; }
         public string CultureName { get; set; }
-        public IEnumerable<SelectListItem> SupportedCulturesList { get; set; }
 
         public string CountryName { get; set; }
         [Display(Name = "EnvSettings_Country")]
